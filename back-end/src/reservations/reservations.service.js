@@ -49,10 +49,9 @@ function update(reservation_id, updatedReservation) {
 }
 
 module.exports = {
-  searchByDate,
-  searchByPhone,
-  create,
-  read,
-  updateStatus,
-  update,
-};
+    list,
+    create,
+    read,
+    update,
+    find,
+}
