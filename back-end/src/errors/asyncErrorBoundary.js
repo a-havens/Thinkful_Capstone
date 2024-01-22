@@ -2,9 +2,9 @@
 // For use in controllers
 
 function asyncErrorBoundary(delegate, defaultStatus) {
-    return (request, response, next) => {
+    return (request, next) => 
       Promise.resolve()
-        .then(() => delegate(request, request, next))
+        .then(() => delegate(request, next))
         .catch((error = {}) => {
           const {status = defaultStatus, message = error } = error;
           next({
@@ -12,7 +12,6 @@ function asyncErrorBoundary(delegate, defaultStatus) {
             message,
           });
         });
-    };
   }
   
   module.exports = asyncErrorBoundary;

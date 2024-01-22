@@ -10,6 +10,8 @@ async function reservationExists(req, res, next) {
 
   if (reservation) {
     res.locals.reservation = reservation;
+    console.log(reservation);
+
     return next();
   }
   next({
@@ -93,7 +95,7 @@ function statusIsBookedOrNull(status) {
   }
 }
 
-function hasValidValues(req, res, next) {
+function hasValidValues(req, next) {
   const { reservation_date, reservation_time, people } = req.body.data;
 
   if (!Number.isInteger(people) || people < 1) {
@@ -207,7 +209,7 @@ async function list(req, res) {
 
 // Read handler for reservation resources
 //* res.locals.reservation is being set from reservationExists()
-async function read(req, res) {
+async function read(res) {
   const { reservation } = res.locals;
   res.json({ data: reservation });
 }

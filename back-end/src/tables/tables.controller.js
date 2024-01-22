@@ -15,7 +15,7 @@ const VALID_PROPERTIES_PUT = [
 ]
 
 // validation middleware: checks that table_name is at least 2 characters
-function tableNameLength(req, res, next) {
+function tableNameLength(req, next) {
     const { table_name } = req.body.data;
     if (table_name.length > 1) {
         return next();
@@ -28,7 +28,7 @@ function tableNameLength(req, res, next) {
 }
 
 // validation middleware: checks that capacity is a number
-function capacityIsNumber(req, res, next) {
+function capacityIsNumber(req, next) {
     const { capacity } = req.body.data;
     if (!isNaN(capacity)) {
         return next();
@@ -76,7 +76,7 @@ async function reservationExists(req, res, next) {
 }
 
 // validation middleware: checks that table had sufficient capacity
-function tableCapacity(req, res, next) { 
+function tableCapacity(res, next) { 
     const { capacity } = res.locals.table;
     const { people } = res.locals.reservation;
     if (capacity >= people) {
@@ -90,7 +90,7 @@ function tableCapacity(req, res, next) {
 }
 
 // validation middlware: checks if table status is free
-function tableStatusFree(req, res, next) {
+function tableStatusFree(res, next) {
     const { status } = res.locals.table;
     if (status === "Free") {
         return next();
@@ -103,7 +103,7 @@ function tableStatusFree(req, res, next) {
 }
 
 // validation middlware: checks if table status is free
-function tableStatusOccupied(req, res, next) {
+function tableStatusOccupied(res, next) {
     const { status } = res.locals.table;
     if (status === "Occupied") {
         return next();
@@ -116,7 +116,7 @@ function tableStatusOccupied(req, res, next) {
 }
 
 // list all tables - sorted by table_name
-async function list(req, res) {
+async function list(res) {
     res.json({ data: await service.list() });
   }
 
