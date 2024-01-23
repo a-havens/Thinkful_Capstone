@@ -6,15 +6,19 @@ export const Dashboard = ({ date }) => {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+useEffect(() => {
+  const abortController = new AbortController();
+  setReservationsError(null);
+  
+  listReservations({ date }, abortController.signal)
+    .then(setReservations)
+    .catch((error) => {
+      console.error("Error fetching reservations:", error);
+      setReservationsError(error);
+    });
 
-    return () => abortController.abort();
-  }, [date])
+  return () => abortController.abort();
+}, [date])
 
   return (
     <main>
