@@ -1,7 +1,7 @@
 import React from "react";
 import Reservation from "./Reservation";
 
-export default function Reservations({ reservations }) {
+export default function Reservations({ reservations, date }) {
 
     const list = reservations.map(reservation => {
         return <Reservation 
@@ -18,7 +18,11 @@ export default function Reservations({ reservations }) {
 
     return(
         <div>
-            {list}
+            {reservations.length > 0 ? (
+                {list}
+            ) : (
+                <h6 className="mb-0">No Reservations for date: {date}</h6>
+            )}
         </div>
     );
 
