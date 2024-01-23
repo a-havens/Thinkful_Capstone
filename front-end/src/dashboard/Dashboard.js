@@ -20,14 +20,21 @@ useEffect(() => {
   return () => abortController.abort();
 }, [date])
 
+
+
   return (
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+        <h4 className="mb-0">Reservations For Date:</h4>
       </div>
       <ErrorAlert error={reservationsError} />
       {JSON.stringify(reservations)}
+      <div>
+        <button type="button">Previous</button>
+        <button type="button">Today</button>
+        <button type="button">Next</button>
+      </div>
     </main>
   );
 }
