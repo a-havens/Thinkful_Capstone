@@ -2,8 +2,8 @@ const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 async function reservationExists(req, res, next) {
-  const { reservationId } = req.params;
-  const reservation = await service.read(reservationId);
+  const { reservation_id } = req.params; // Updated from reservationId to reservation_id
+  const reservation = await service.read(reservation_id);
 
   if (reservation) {
     res.locals.reservation = reservation;
@@ -13,7 +13,7 @@ async function reservationExists(req, res, next) {
   }
   next({
     status: 404,
-    message: `Reservation with id: ${reservationId} was not found`,
+    message: `Reservation with id: ${reservation_id} was not found`,
   });
 }
 
