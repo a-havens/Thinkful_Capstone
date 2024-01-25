@@ -36,7 +36,7 @@ export default function ReservationForm({ reservation_id }) {
         return () => abortController.abort();
     }, [reservation_id]);
 
-    const handleChange = ({ target }) => {
+    const handleChange = async ({ target }) => {
 
         let name = target.name;
         let value = target.value;
@@ -73,13 +73,13 @@ export default function ReservationForm({ reservation_id }) {
             }
         }
         // set the form state
-        setForm({
+        await setForm({
             ...form,
             [target.name]: target.value,
         });
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const abortController = new AbortController();
         // POST request (new reservation)
@@ -94,7 +94,7 @@ export default function ReservationForm({ reservation_id }) {
             }
             // do not send POST request if there is a pending error message
             if (reservationsError.length === 0) {
-                postData();
+                await postData();
             }
         }
         // PUT request (edit reservation)
@@ -110,9 +110,9 @@ export default function ReservationForm({ reservation_id }) {
             }
             // do not send PUT request if there is a pending error message
             if (reservationsError.length === 0) {
-                putData();
+                await putData();
             }
-        } 
+        }
     }
     return (
             <>

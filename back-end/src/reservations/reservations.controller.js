@@ -114,8 +114,10 @@ async function create(req, res, next) {
   }
 
   const newReservation = await service.create(req.body.data);
+
+  // Ensure that the response is an object, not an array
   res.status(201).json({
-    data: newReservation
+    data: newReservation[0] // Assuming service.create returns an array
   });
 }
 

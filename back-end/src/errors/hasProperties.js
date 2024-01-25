@@ -1,28 +1,15 @@
-/**
- * Creates a middleware function that validates that req.body.data has the specified non-falsey properties.
- * @param properties
- *  one or more property name strings.
- * @returns {function(*, *, *): void}
- *    a middleware function that validates that req.body.data has the specified non-falsey properties.
- */
+// const VALID_PROPERTIES_PUT = [
+  // "reservation_id"
+// ]
 function hasProperties(...properties) {
+  // Return 400 if data is missing
+  if (properties.length === 0) {
     return function (req, res, next) {
-      const { data = {} } = res.body;
-  
-      try {
-        properties.forEach((property) => {
-          const value = data[property];
-          if (!value) {
-            const error = new Error(`A '${property}' property is required.`);
-            error.status = 400;
-            throw error;
-          }
-        });
-        next();
-      } catch (error) {
-        next(error);
-      }
-    };
+      req.send(400)
+    }
   }
-  
-  module.exports = hasProperties;
+
+}
+
+
+module.exports = hasProperties;

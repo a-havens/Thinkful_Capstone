@@ -14,4 +14,9 @@ router
     .post(controller.create)
     .all(methodNotAllowed);
 
+router
+    .route("/tables")
+    .post(controller.seat)
+    .get(controller.list)
+
 module.exports = router;
