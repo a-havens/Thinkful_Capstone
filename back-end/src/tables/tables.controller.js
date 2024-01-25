@@ -1,7 +1,6 @@
 const service = require("./tables.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
-const hasOnlyValidProperties = require("../errors/hasOnlyValidProperties");
 const reservationService = require("../reservations/reservations.service");
 
 
@@ -92,11 +91,11 @@ function tableCapacity(req, res, next) {
 // validation middlware: checks if table status is free
 function tableStatusFree(req, res, next) {
     const { status } = res.locals.table;
-    if (status === "Occupied") {
+    if (status === "Free") {
         return next();
     } else {
         return next({
-            status: 400,
+            status: 200,
             message: "Table is not occupied."
         });
     }
@@ -106,7 +105,7 @@ function tableStatusFree(req, res, next) {
 // validation middlware: checks if table status is free
 function tableStatusOccupied(req, res, next) {
     const { status } = res.locals.table;
-    if (status === "Free") {
+    if (status === "Occupied") {
         return next();
     } else {
         return next({
@@ -170,13 +169,13 @@ module.exports = {
     list: asyncErrorBoundary(list),
     create: [
         hasProperties(...VALID_PROPERTIES_POST),
-        hasOnlyValidProperties(...VALID_PROPERTIES_POST, "reservation_id"),
+        // Check if reservation_id param is needed. Add to hasProperties method if so
+        // hasOnlyValidProperties(...VALID_PROPERTIES_POST, "reservation_id"),
         tableNameLength,
         capacityIsNumber,
         asyncErrorBoundary(create)],
     seat: [
         hasProperties(...VALID_PROPERTIES_PUT),
-        hasOnlyValidProperties(...VALID_PROPERTIES_PUT),
         asyncErrorBoundary(tableExists),
         asyncErrorBoundary(reservationExists),
         tableCapacity,

@@ -1,14 +1,34 @@
 // const VALID_PROPERTIES_PUT = [
-  // "reservation_id"
+// "reservation_id"
 // ]
 function hasProperties(...properties) {
-  // Return 400 if data is missing
-  if (properties.length === 0) {
-    return function (req, res, next) {
-      req.send(400)
-    }
-  }
+  return function (req, res, next) {
+    const { data = {} } = req.body;
 
+    const properties = Object.keys(data);
+
+    // If data is missing
+    if (properties.length === 0) {
+      return next({
+        status: 400,
+        message: 'Data is missing',
+      });
+    }
+
+    const invalidFields = properties.filter(
+      (field) => !properties.includes(field)
+    );
+
+    // If invalid fields presnt 
+    if (invalidFields) {
+      return next({
+        status: 400,
+        message: `Invalid field(s): ${invalidFields.join(", ")}`,
+      });
+    }
+
+    next();
+  }
 }
 
 
