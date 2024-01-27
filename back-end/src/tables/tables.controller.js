@@ -16,6 +16,12 @@ const VALID_PROPERTIES_PUT = [
 // validation middleware: checks that table_name is at least 2 characters
 function tableNameLength(req, res, next) {
     const { table_name } = req.body.data;
+    if (!table_name) {
+        return next({
+            status: 400,
+            message: "table_name is missing."
+        });
+    }
     if (table_name.length >= 2) {
         return next();
     } else {
