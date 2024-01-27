@@ -1,26 +1,26 @@
 // const VALID_PROPERTIES_PUT = [
 // "reservation_id"
 // ]
-function hasProperties(...properties) {
+function hasProperties(...expectedProperties) {
   return function (req, res, next) {
     const { data = {} } = req.body;
 
-    const properties = Object.keys(data);
+    const actualProperties = Object.keys(data);
 
     // If data is missing
-    if (properties.length === 0) {
+    if (actualProperties.length === 0) {
       return next({
         status: 400,
         message: 'Data is missing',
       });
     }
 
-    const invalidFields = properties.filter(
-      (field) => !properties.includes(field)
+    const invalidFields = actualProperties.filter(
+      (field) => !expectedProperties.includes(field)
     );
 
-    // If invalid fields presnt 
-    if (invalidFields) {
+    // If invalid fields present
+    if (invalidFields.length > 0) {
       return next({
         status: 400,
         message: `Invalid field(s): ${invalidFields.join(", ")}`,
@@ -28,8 +28,7 @@ function hasProperties(...properties) {
     }
 
     next();
-  }
+  };
 }
-
 
 module.exports = hasProperties;

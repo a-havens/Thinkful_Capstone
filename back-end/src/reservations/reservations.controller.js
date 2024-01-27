@@ -11,19 +11,14 @@ function isValidTime(timeString) {
   return regex.test(timeString);
 }
 
-async function list(req, res) {
-  console.log("Inside List");
+async function list(req, res, next) {
   if (req.query) {
-    console.log("Query: ", req.query);
     if (req.query.date) {
       const reservations = await service.list(req.query.date);
       const sortedReservations = sortByTime(reservations);
-      console.log(reservations);
-      console.log(sortedReservations);
       res.json({ data: sortedReservations });
     }
   } else {
-    console.log("No Query");
     const reservations = await service.listAll();
     const sortedReservations = sortByTime(reservations);
     res.json({ data: sortedReservations });
@@ -115,9 +110,8 @@ async function create(req, res, next) {
 
   const newReservation = await service.create(req.body.data);
 
-  // Ensure that the response is an object, not an array
   res.status(201).json({
-    data: newReservation[0] // Assuming service.create returns an array
+    data: newReservation[0]
   });
 }
 
@@ -135,9 +129,52 @@ function sortByTime(reservations) {
   });
 }
 
+async function update(req, res, next) {
+  const { reservationId } = req.params;
+  const { status } = req.body.data;
+
+  if (!status || typeof status !== 'string') {
+    return next({ status: 400, message: "Invalid status format" });
+  }
+
+  const validStatuses = ['booked', 'seated', 'finished', 'cancelled'];
+
+  if (!validStatuses.includes(status.toLowerCase())) {
+    return next({ status: 400, message: "Invalid status value" });
+  }
+
+  const updatedReservation = await service.updateStatus(reservationId, status);
+  res.status(200).json({ data: updatedReservation });
+}
+
+async function read(req, res, next) {
+  res.json({ data: res.locals.reservation });
+}
+
+
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [hasData, hasProperty('first_name'), hasProperty('last_name'), hasProperty('reservation_date'),
-    hasProperty('reservation_time'), hasProperty('mobile_number'), hasPeople, validTimeframe, asyncErrorBoundary(create)],
-  delete: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(destroy)],
+  create: [
+    hasData, 
+    hasProperty('first_name'), 
+    hasProperty('last_name'), 
+    hasProperty('reservation_date'),
+    hasProperty('reservation_time'), 
+    hasProperty('mobile_number'), 
+    hasPeople, 
+    validTimeframe, 
+    asyncErrorBoundary(create)
+  ],
+  delete: [
+    asyncErrorBoundary(reservationExists), 
+    asyncErrorBoundary(destroy)
+  ],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(update)
+  ],
+  read: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(read)
+  ]
 };

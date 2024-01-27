@@ -35,14 +35,13 @@ function tableNameLength(req, res, next) {
 // validation middleware: checks that capacity is a number
 function capacityIsNumber(req, res, next) {
     const { capacity } = req.body.data;
-    if (!isNaN(capacity)) {
-        return next();
-    } else {
+    if (!capacity || isNaN(capacity)) {
         return next({
             status: 400,
-            message: `capacity field formatted incorrectly: ${capacity}. Needs to be a number.`
+            message: "capacity field is missing or formatted incorrectly. Needs to be a number."
         });
     }
+    return next();
 }
 
 // validation middleware: checks that table_name exists
@@ -63,6 +62,14 @@ async function tableExists(req, res, next) {
 // validation middleware: checks that reservation exists
 async function reservationExists(req, res, next) {
     const { reservation_id } = req.body.data;
+
+    if (!reservation_id) {
+        return next({
+            status: 400,
+            message: "reservation_id is missing."
+        });
+    }
+
     const data = await reservationService.read(reservation_id);
     if (data && data.status !== "seated") {
         res.locals.reservation = data;
@@ -94,7 +101,7 @@ function tableCapacity(req, res, next) {
     }
 }
 
-// validation middlware: checks if table status is free
+// validation middleware: checks if table status is free
 function tableStatusFree(req, res, next) {
     const { status } = res.locals.table;
     if (status === "Free") {
@@ -102,13 +109,13 @@ function tableStatusFree(req, res, next) {
     } else {
         return next({
             status: 200,
-            message: "Table is not occupied."
+            message: "occupied"
         });
     }
 }
 
 
-// validation middlware: checks if table status is free
+// validation middleware: checks if table status is free
 function tableStatusOccupied(req, res, next) {
     const { status } = res.locals.table;
     if (status === "Occupied") {
@@ -116,7 +123,7 @@ function tableStatusOccupied(req, res, next) {
     } else {
         return next({
             status: 400,
-            message: "Table is currently occupied."
+            message: "not occupied"
         });
     }
 }
@@ -127,10 +134,19 @@ async function list(req, res) {
 }
 
 // create a new table
-async function create(req, res) {
-    const table = await service.create(req.body.data);
-    res.status(201).json({ data: table });
+async function create(req, res, next) {
+    try {
+        const table = await service.create(req.body.data);
+        res.status(201).json({ data: table });
+    } catch (error) {
+        next({
+            status: 400,
+            message: error.message || "Error creating the table.",
+            error: "Bad Request",
+        });
+    }
 }
+
 
 // seat a reservation at a table
 async function seat(req, res) {
@@ -154,25 +170,74 @@ async function seat(req, res) {
 }
 
 // finish an occupied table
-async function finish(req, res) {
-    const { table_id } = req.params;
-    const { table } = res.locals;
-    const updatedTableData = {
-        ...table,
-        status: "Free"
+async function finish(req, res, next) {
+    try {
+        const { table_id } = req.params;
+        const { table } = res.locals;
+
+        if (table.status !== "Occupied") {
+            return next({
+                status: 400,
+                message: "Table is not currently occupied.",
+            });
+        }
+
+        const updatedTableData = {
+            ...table,
+            status: "Free",
+        };
+
+        const updatedTable = await service.finish(updatedTableData);
+
+        // set reservation status to "finished" using reservation id
+        const updatedReservation = {
+            status: "finished",
+            reservation_id: table.reservation_id,
+        };
+
+        await reservationService.update(updatedReservation);
+
+        res.json({ data: updatedTable });
+    } catch (error) {
+        next({
+            status: 500,
+            message: "Error finishing the table.",
+        });
     }
-    const updatedTable = await service.finish(updatedTableData);
-    // set reservation status to "finished" using reservation id
-    const updatedReservation = {
-        status: "finished",
-        reservation_id: table.reservation_id,
+}
+
+async function update(req, res, next) {
+    // Get the found table and reservation from the `res.locals` object
+    const { foundTable } = res.locals;
+    const { thisReservation } = res.locals;
+    // Update the details of the table
+    const updatedTable = {
+        reservation_id: thisReservation.reservation_id,
+        table_id: res.locals.foundTable.table_id,
+    };
+    // Update the table in the `service`
+    const updated = await service.update(updatedTable);
+    // If the status of the reservation is `seated`, return an error
+    if(foundTable.reservation_id){
+        next({ status: 400, message: `Table is occupied` }) 
     }
-    await reservationService.update(updatedReservation);
-    res.json({ data: updatedTable });
+    if (thisReservation.status == 'seated') {
+        next({ status: 400, message: `Reservation is ${thisReservation.status}.` });
+    }
+    // Update the status of the reservation to `seated`
+    await updateRes({
+        ...thisReservation,
+        status: 'seated'
+    });
+    // Return the updated details of the table as a JSON response
+    res.status(200).json({ data: updated });
 }
 
 module.exports = {
-    list: asyncErrorBoundary(list),
+    list: [
+        asyncErrorBoundary(list),
+        capacityIsNumber,
+    ] ,
     create: [
         hasProperties(...VALID_PROPERTIES_POST),
         // Check if reservation_id param is needed. Add to hasProperties method if so
@@ -186,11 +251,16 @@ module.exports = {
         asyncErrorBoundary(reservationExists),
         tableCapacity,
         tableStatusFree,
+        capacityIsNumber,
         asyncErrorBoundary(seat),
+    ],
+    update: [
+        asyncErrorBoundary(tableExists), 
+        asyncErrorBoundary(update)
     ],
     finish: [
         asyncErrorBoundary(tableExists),
         tableStatusOccupied,
         asyncErrorBoundary(finish),
-    ]
+    ], 
 };
