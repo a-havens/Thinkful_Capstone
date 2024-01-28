@@ -5,7 +5,7 @@ function list() {
   .select("*")
   .orderBy("tables.table_name");
 }
-//standard list and create functions aswell as read for knex manipulating the information from the back-end databases
+//standard list and create functions as well as read for knex manipulating the information from the back-end databases
 function create(table) {
   return knex("tables")
     .insert(table)
