@@ -2,11 +2,11 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { DashboardScreen } from '../../features/dashboard/DashboardScreen';
 import { SearchScreen } from '../../features/search/SearchScreen';
-import { TablesListScreen } from '../../features/addTable/TablesListScreen';
-import { ReservationsScreen } from '../../features/addReservation/ReservationsScreen';
-import { AddTableScreen } from '../../features/addTable/AddTableScreen';
+import { TablesListScreen } from '../../features/manageTables/TablesListScreen';
+import { ManageReservationsScreen } from '../../features/manageReservation/ManageReservationsScreen';
+import { AddTableScreen } from '../../features/manageTables/AddTableScreen';
 import { NotFound } from './NotFound';
-import { AssignTableReservationForm } from '../../features/addReservation/components/AssignTableReservationForm';
+import { AssignTableReservationForm } from '../../features/manageReservation/components/AssignTableReservationForm';
 
 /**
  * Defines all the routes for the application.
@@ -27,10 +27,10 @@ export const Routes = () => (
         <Route path='/search' component={SearchScreen} />
 
         <Route path='/reservations/new'>
-            <ReservationsScreen title='New Reservation' />
+            <ManageReservationsScreen title='New Reservation' />
         </Route>
         <Route path='/reservations/:reservation_id/edit'>
-            <ReservationsScreen title='Edit Reservation' isEditing />
+            <ManageReservationsScreen title='Edit Reservation' isEditing />
         </Route>
         <Route
             path='/reservations/:reservation_id/seat'

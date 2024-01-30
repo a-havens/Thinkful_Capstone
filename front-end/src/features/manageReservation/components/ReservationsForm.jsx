@@ -88,8 +88,14 @@ export const ReservationForm = ({ reservation_id }) => {
                 />
 
                 <Button title='Submit' type='submit' />
-                <Button title='Cancel' onClick={() => history.goBack()} />
+                <Button
+                    title='Cancel'
+                    onClick={() => history.goBack()}
+                    data-reservation-id-cancel={reservation_id}
+                />
             </form>
         </>
     );
 };
+
+//const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.reservation_id}"]`;

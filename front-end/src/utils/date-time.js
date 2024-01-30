@@ -12,11 +12,23 @@ const timeFormat = /\d\d:\d\d/;
  * @returns {string}
  *  the specified Date formatted as YYYY-MM-DD
  */
-function asDateString(date) {
+export const asDateString = (date) => {
     return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
         .toString(10)
         .padStart(2, '0')}-${date.getDate().toString(10).padStart(2, '0')}`;
-}
+};
+
+export const convertFormattedDate = (inputDate) => {
+    const parsedDate = new Date(inputDate);
+
+    // Get the year, month, and day from the parsed date
+    const year = parsedDate.getUTCFullYear();
+    const month = (parsedDate.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = parsedDate.getUTCDate().toString().padStart(2, '0');
+
+    // Format the date to 'YYYY-MM-DD'
+    return year + '-' + month + '-' + day;
+};
 
 /**
  * Format a date string in ISO-8601 format (which is what is returned from PostgreSQL) as YYYY-MM-DD.
@@ -25,9 +37,9 @@ function asDateString(date) {
  * @returns {*}
  *  the specified date string formatted as YYYY-MM-DD
  */
-export function formatAsDate(dateString) {
+export const formatAsDate = (dateString) => {
     return dateString.match(dateFormat)[0];
-}
+};
 
 /**
  * Format a time string in HH:MM:SS format (which is what is returned from PostgreSQL) as HH:MM.
@@ -36,18 +48,18 @@ export function formatAsDate(dateString) {
  * @returns {*}
  *  the specified time string formatted as YHH:MM.
  */
-export function formatAsTime(timeString) {
+export const formatAsTime = (timeString) => {
     return timeString.match(timeFormat)[0];
-}
+};
 
 /**
  * Today's date as YYYY-MM-DD.
  * @returns {string}
  *  the today's date formatted as YYYY-MM-DD
  */
-export function today() {
+export const today = () => {
     return asDateString(new Date());
-}
+};
 
 /**
  * Subtracts one day from the specified date and returns it as YYYY-MM-DD.
@@ -56,12 +68,12 @@ export function today() {
  * @returns {string}
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
  */
-export function previous(currentDate) {
+export const previous = (currentDate) => {
     const [year, month, day] = currentDate.split('-');
     const date = new Date(year, month - 1, day);
     date.setDate(date.getDate() - 1);
     return asDateString(date);
-}
+};
 
 /**
  * Adds one day to the specified date and returns it as YYYY-MM-DD.
@@ -70,9 +82,9 @@ export function previous(currentDate) {
  * @returns {string}
  *  the date one day after currentDate, formatted as YYYY-MM-DD
  */
-export function next(currentDate) {
+export const next = (currentDate) => {
     const [year, month, day] = currentDate.split('-');
     const date = new Date(year, month - 1, day);
     date.setDate(date.getDate() + 1);
     return asDateString(date);
-}
+};

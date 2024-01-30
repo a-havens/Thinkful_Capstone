@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Section } from '../../components/Section/Section';
 import { ReservationForm } from './components/ReservationsForm';
 
-export const ReservationsScreen = ({ title, isEditing }) => {
+export const ManageReservationsScreen = ({ title, isEditing }) => {
     const { reservation_id } = useParams();
 
     return (

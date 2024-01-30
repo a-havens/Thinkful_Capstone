@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDashboard } from './hooks/useDashboard';
 import { ErrorState } from '../../components/Error/ErrorState';
-import { ReservationsList } from '../addReservation/components/ReservationsList';
-import { TableList } from '../addTable/components/TableList';
+import { ReservationsList } from '../manageReservation/components/ReservationsList';
+import { TableList } from '../manageTables/components/TableList';
 
 export const DashboardScreen = () => {
     const { data, isError, error, actions } = useDashboard();

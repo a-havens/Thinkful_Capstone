@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { formatAsDate, previous, next, today } from '../../../utils/date-time';
 import { useReservationsListQuery } from '../api/useReservationsListQuery';
-import { useTablesQuery } from '../../addTable/api/useTablesQuery';
+import { useTablesQuery } from '../../manageTables/api/useTablesQuery';
 import { useRouteParams } from '../../../hooks/useRouteParams';
 
 const filterReservationsByCurrentDate = (reservations, currentDate) => {

@@ -27,7 +27,7 @@ const fetchReservationsByMobileNumber = async ({ mobileNumber }) => {
  */
 export const useReservationsByMobileNumberQuery = ({ mobileNumber }) => {
     return useQuery({
-        queryFn: fetchReservationsByMobileNumber,
+        queryFn: () => fetchReservationsByMobileNumber({ mobileNumber }),
         queryKey: [RESERVATIONS_BY_MOBILE_NUMBER_QUERY_KEY, mobileNumber],
         enabled: mobileNumber !== undefined && mobileNumber !== '',
     });

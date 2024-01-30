@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '../../../constants/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithException } from '../../../utils/handledFetch';
-import { READ_RESERVATION_QUERY_KEY } from '../../addReservation/api/useReadReservationQuery';
+import { READ_RESERVATION_QUERY_KEY } from '../../manageReservation/api/useReadReservationQuery';
 import { useHistory } from 'react-router-dom';
 
 const assignReservationToTable = async ({ table_id, reservation_id }) => {

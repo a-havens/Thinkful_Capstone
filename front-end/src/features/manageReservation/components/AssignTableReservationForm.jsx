@@ -1,10 +1,10 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { FormSelect } from '../../components/FormSelect';
-import { useUpdateTableMutation } from '../../addTable/api/useUpdateTableMutation';
+import { useUpdateTableMutation } from '../../manageTables/api/useUpdateTableMutation';
 import { useForm } from '../../../hooks/useForm';
 import { Button } from '../../../components/Button/Button';
-import { useTablesQuery } from '../../addTable/api/useTablesQuery';
+import { useTablesQuery } from '../../manageTables/api/useTablesQuery';
 
 export const AssignTableReservationForm = () => {
     const { reservation_id } = useParams();

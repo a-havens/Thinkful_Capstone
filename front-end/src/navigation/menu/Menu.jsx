@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { reservationForm } from '../../constants/constants';
 
 /**
  * Defines the menu for this application.
@@ -33,7 +34,15 @@ export const Menu = () => (
                     </Link>
                 </li>
                 <li className='nav-item'>
-                    <Link className='nav-link' to='/reservations/new'>
+                    <Link
+                        className='nav-link'
+                        to={{
+                            pathname: '/reservations/new',
+                            state: {
+                                form: reservationForm,
+                            },
+                        }}
+                    >
                         <span className='oi oi-plus' />
                         &nbsp;New Reservation
                     </Link>

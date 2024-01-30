@@ -28,13 +28,5 @@ export const useUpdateReservationStatusMutation = () => {
                 queryKey: [RESERVATIONS_LIST_QUERY_KEY],
             });
         },
-        onSettled: (data, error, variables) => {
-            if (!error) {
-                // Invalidate the specific reservation query to refetch the updated data
-                queryClient.invalidateQueries({
-                    queryKey: ['reservation', variables.reservation_id],
-                });
-            }
-        },
     });
 };

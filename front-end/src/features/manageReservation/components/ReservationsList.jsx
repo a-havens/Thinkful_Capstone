@@ -1,6 +1,7 @@
 import React from 'react';
 import { useUpdateReservationStatusMutation } from '../api/useUpdateReservationStatusMutation';
 import { Link } from 'react-router-dom';
+import { reservationForm } from '../../../constants/constants';
 
 export const ReservationsList = ({ reservations }) => {
     const { mutate: cancelReservation } = useUpdateReservationStatusMutation();
@@ -9,7 +10,7 @@ export const ReservationsList = ({ reservations }) => {
         reservation_id,
         reservation_status,
     }) => {
-        if (window.confirm('Are you sure you want to cancel reservation.')) {
+        if (window.confirm('Do you want to cancel this reservation?')) {
             cancelReservation({ reservation_id, status: reservation_status });
         }
     };
@@ -47,7 +48,12 @@ export const ReservationsList = ({ reservations }) => {
                                     Seat
                                 </Link>
                                 <Link
-                                    to={`/reservations/${reservation.reservation_id}/edit`}
+                                    to={{
+                                        pathname: `/reservations/${reservation.reservation_id}/edit`,
+                                        state: {
+                                            form: reservationForm,
+                                        },
+                                    }}
                                     className='btn btn-outline-primary mx-1'
                                 >
                                     Edit

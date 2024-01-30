@@ -3,38 +3,42 @@ import { useCreateReservationMutation } from '../api/useCreateReservationMutatio
 import { useEffect } from 'react';
 import { useUpdateReservationMutation } from '../api/useUpdateReservationMutation';
 import { useForm } from '../../../hooks/useForm';
+import { convertFormattedDate } from '../../../utils/date-time';
+import { useLocation } from 'react-router-dom';
+import { reservationForm } from '../../../constants/constants';
 
 export const useReservationForm = ({ reservation_id }) => {
-    const { formState, setFormState } = useForm({
-        first_name: '',
-        last_name: '',
-        mobile_number: '',
-        reservation_date: '',
-        reservation_time: '',
-        people: '',
-    });
+    const location = useLocation();
+
+    const { state: locationState } = location;
+
+    const { formState, setFormState } = useForm(reservationForm);
 
     const { data: reservation } = useReadReservationQuery({ reservation_id });
 
     const {
-        mutate: postReservation,
+        mutate: createReservation,
         isError: isPostReservationError,
         error: postReservationError,
     } = useCreateReservationMutation();
 
-    const { mutate: putReservation } = useUpdateReservationMutation({
-        reservation_id,
-    });
+    const { mutate: editReservation } = useUpdateReservationMutation();
 
     // if "editing" the form, load data for the supplied reservation_id
     useEffect(() => {
-        const abortController = new AbortController();
-
-        if (reservation) {
-            setFormState(reservation);
+        if (reservation !== undefined) {
+            setFormState({
+                ...reservation.data,
+                reservation_date: convertFormattedDate(
+                    reservation.data.reservation_date
+                ),
+            });
+        } else {
+            setFormState({
+                ...locationState.form,
+            });
         }
-        return () => abortController.abort();
-    }, [reservation, setFormState]);
+    }, [locationState, reservation, setFormState]);
 
     const handleChange = ({ target }) =>
         setFormState({
@@ -47,7 +51,7 @@ export const useReservationForm = ({ reservation_id }) => {
 
         // POST request (new reservation)
         if (!reservation_id) {
-            postReservation({
+            createReservation({
                 ...formState,
                 people: parseInt(formState.people, 10),
             });
@@ -55,12 +59,17 @@ export const useReservationForm = ({ reservation_id }) => {
 
         // PUT request (edit reservation)
         if (reservation_id) {
-            putReservation(formState);
+            console.log('calling');
+            editReservation({
+                form: formState,
+                reservation_id: reservation_id,
+            });
         }
     };
 
     return {
         formState,
+        setFormState,
         handleChange,
         handleSubmit,
         postReservationStates: {
