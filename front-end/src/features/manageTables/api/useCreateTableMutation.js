@@ -21,7 +21,7 @@ export const useCreateTableMutation = () => {
     const history = useHistory();
 
     return useMutation({
-        mutationFn: (table) => postTable(table),
+        mutationFn: (variables) => postTable(variables.form),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: [TABLES_QUERY_KEY],

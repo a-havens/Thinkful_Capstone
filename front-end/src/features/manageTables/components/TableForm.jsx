@@ -23,7 +23,13 @@ export const TableForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        postTable(formState);
+
+        postTable({
+            form: {
+                ...formState,
+                capacity: parseInt(formState.capacity, 10),
+            },
+        });
     };
 
     return (
