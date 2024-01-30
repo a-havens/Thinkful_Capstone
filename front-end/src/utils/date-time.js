@@ -4,7 +4,7 @@ const timeFormat = /\d\d:\d\d/;
 /**
  * Formats a Date object as YYYY-MM-DD.
  *
- * This function is *not* exported because the UI should generally avoid working directly with Date instance.
+ * This function is *not* exported because the UI should generally avoid working directly with Date instances.
  * You may export this function if you need it.
  *
  * @param date
@@ -13,9 +13,9 @@ const timeFormat = /\d\d:\d\d/;
  *  the specified Date formatted as YYYY-MM-DD
  */
 function asDateString(date) {
-  return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
-    .toString(10)
-    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
+    return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
+        .toString(10)
+        .padStart(2, '0')}-${date.getDate().toString(10).padStart(2, '0')}`;
 }
 
 /**
@@ -26,7 +26,7 @@ function asDateString(date) {
  *  the specified date string formatted as YYYY-MM-DD
  */
 export function formatAsDate(dateString) {
-  return dateString.match(dateFormat)[0];
+    return dateString.match(dateFormat)[0];
 }
 
 /**
@@ -37,46 +37,42 @@ export function formatAsDate(dateString) {
  *  the specified time string formatted as YHH:MM.
  */
 export function formatAsTime(timeString) {
-  return timeString.match(timeFormat)[0];
+    return timeString.match(timeFormat)[0];
 }
 
 /**
  * Today's date as YYYY-MM-DD.
- * @returns {*}
+ * @returns {string}
  *  the today's date formatted as YYYY-MM-DD
  */
 export function today() {
-  return asDateString(new Date());
+    return asDateString(new Date());
 }
 
 /**
- * Subtracts one day to the specified date and return it in as YYYY-MM-DD.
+ * Subtracts one day from the specified date and returns it as YYYY-MM-DD.
  * @param currentDate
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
- * @returns {*}
+ * @returns {string}
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
  */
 export function previous(currentDate) {
-  let [ year, month, day ] = currentDate.split("-");
-  month -= 1;
-  const date = new Date(year, month, day);
-  date.setMonth(date.getMonth());
-  date.setDate(date.getDate() - 1);
-  return asDateString(date);
+    const [year, month, day] = currentDate.split('-');
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() - 1);
+    return asDateString(date);
 }
 
 /**
- * Adds one day to the specified date and return it in as YYYY-MM-DD.
+ * Adds one day to the specified date and returns it as YYYY-MM-DD.
  * @param currentDate
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
- * @returns {*}
+ * @returns {string}
  *  the date one day after currentDate, formatted as YYYY-MM-DD
  */
 export function next(currentDate) {
-  let [ year, month, day ] = currentDate.split("-");
-  month -= 1;
-  const date = new Date(year, month, day);
-  date.setMonth(date.getMonth());
-  date.setDate(date.getDate() + 1);
-  return asDateString(date);
+    const [year, month, day] = currentDate.split('-');
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() + 1);
+    return asDateString(date);
 }

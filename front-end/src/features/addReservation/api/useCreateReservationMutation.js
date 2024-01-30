@@ -3,27 +3,25 @@ import { API_BASE_URL } from '../../../constants/constants';
 import { useHistory } from 'react-router-dom';
 import { fetchWithException } from '../../../utils/handledFetch';
 
-const putReservation = async (reservation) => {
+const postReservation = async (reservation) => {
     const options = {
-        method: 'PUT',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ data: reservation }),
     };
 
-    return await fetchWithException(
-        `${API_BASE_URL}/reservations/${reservation.reservation_id}`,
-        options
-    );
+    return await fetchWithException(`${API_BASE_URL}/reservations`, options);
 };
 
-export const useUpdateReservationMutation = ({ reservation_date }) => {
+// posts a new reservation to the database
+export const useCreateReservationMutation = () => {
     const history = useHistory();
 
     return useMutation({
-        mutationFn: (reservation) => putReservation(reservation),
-        onSuccess: (data) =>
-            history.push(`/dashboard?date=${reservation_date}`),
+        mutationFn: (reservation) => postReservation(reservation),
+        onSuccess: (_data, variables) =>
+            history.push(`/dashboard?date=${variables.reservation_date}`),
     });
 };
