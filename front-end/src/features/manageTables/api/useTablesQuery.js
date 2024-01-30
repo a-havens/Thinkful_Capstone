@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { API_BASE_URL } from '../../../constants/constants';
 import { fetchWithException } from '../../../utils/handledFetch';
 
-const TABLES_QUERY_KEY = 'tables';
+export const TABLES_QUERY_KEY = 'tables';
 
 const fetchTables = async () => {
     try {

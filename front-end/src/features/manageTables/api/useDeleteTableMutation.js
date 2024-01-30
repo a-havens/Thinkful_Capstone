@@ -1,7 +1,9 @@
 import { API_BASE_URL } from '../../../constants/constants';
-import { useMutation } from '@tanstack/react-query';
-import { useHistory } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithException } from '../../../utils/handledFetch';
+import { TABLES_QUERY_KEY } from './useTablesQuery';
+import { RESERVATIONS_LIST_QUERY_KEY } from '../../dashboard/api/useReservationsListQuery';
+import { useHistory } from 'react-router-dom';
 
 const deleteTable = async (table_id) => {
     const options = {
@@ -18,12 +20,17 @@ const deleteTable = async (table_id) => {
 };
 
 export const useDeleteTableMutation = () => {
+    const queryClient = useQueryClient();
     const history = useHistory();
 
     return useMutation({
         mutationFn: (table_id) => deleteTable(table_id),
-        onsuccess: () => {
-            history.go(0);
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [TABLES_QUERY_KEY] });
+            queryClient.invalidateQueries({
+                queryKey: [RESERVATIONS_LIST_QUERY_KEY],
+            });
+            history.push('/dashboard');
         },
     });
 };

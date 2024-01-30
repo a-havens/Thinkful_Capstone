@@ -15,8 +15,6 @@ export const TableForm = () => {
 
     const history = useHistory();
 
-    const abortController = new AbortController();
-
     const handleChange = ({ target }) =>
         setFormState({
             ...formState,

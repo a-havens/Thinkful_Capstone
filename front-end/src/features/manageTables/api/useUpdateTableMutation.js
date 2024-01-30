@@ -2,6 +2,7 @@ import { API_BASE_URL } from '../../../constants/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithException } from '../../../utils/handledFetch';
 import { READ_RESERVATION_QUERY_KEY } from '../../addReservation/api/useReadReservationQuery';
+import { useHistory } from 'react-router-dom';
 
 const assignReservationToTable = async ({ table_id, reservation_id }) => {
     const options = {
@@ -20,6 +21,7 @@ const assignReservationToTable = async ({ table_id, reservation_id }) => {
 };
 
 export const useUpdateTableMutation = () => {
+    const history = useHistory();
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -35,6 +37,7 @@ export const useUpdateTableMutation = () => {
                     variables.reservation_id,
                 ],
             });
+            history.push('/dashboard');
         },
     });
 };

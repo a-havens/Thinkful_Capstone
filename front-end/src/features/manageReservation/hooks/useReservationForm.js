@@ -6,11 +6,11 @@ import { useForm } from '../../../hooks/useForm';
 
 export const useReservationForm = ({ reservation_id }) => {
     const { formState, setFormState } = useForm({
-        first_name: 'Tom',
-        last_name: 'Brady',
-        mobile_number: '555-123-4567',
-        reservation_date: '2020-01-31',
-        reservation_time: '15:00',
+        first_name: '',
+        last_name: '',
+        mobile_number: '',
+        reservation_date: '',
+        reservation_time: '',
         people: '',
     });
 
