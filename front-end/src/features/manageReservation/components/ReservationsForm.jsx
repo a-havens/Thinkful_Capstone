@@ -6,19 +6,29 @@ import { FormInput } from '../../components/FormInput';
 import { ErrorState } from '../../../components/Error/ErrorState';
 
 export const ReservationForm = ({ reservation_id }) => {
-    const { formState, handleChange, handleSubmit, postReservationStates } =
-        useReservationForm({
-            reservation_id,
-        });
+    const {
+        formState,
+        handleChange,
+        handleSubmit,
+        isError,
+        readReservationError,
+        postReservationError,
+        editReservationError,
+    } = useReservationForm({
+        reservation_id,
+    });
     const history = useHistory();
-
-    const { isPostReservationError, postReservationError } =
-        postReservationStates;
 
     return (
         <>
-            {isPostReservationError && (
-                <ErrorState error={postReservationError.message} />
+            {isError && (
+                <ErrorState
+                    error={
+                        readReservationError ||
+                        postReservationError ||
+                        editReservationError
+                    }
+                />
             )}
             <form onSubmit={handleSubmit}>
                 <FormInput
@@ -97,5 +107,3 @@ export const ReservationForm = ({ reservation_id }) => {
         </>
     );
 };
-
-//const cancelButtonSelector = `[data-reservation-id-cancel="${reservation.reservation_id}"]`;

@@ -5,19 +5,31 @@ import { READ_RESERVATION_QUERY_KEY } from '../../manageReservation/api/useReadR
 import { useHistory } from 'react-router-dom';
 
 const assignReservationToTable = async ({ table_id, reservation_id }) => {
+    if (!table_id) {
+        // This should be detected by the BE or at the very least handled gracefully on the FE
+        // Using the disabled prop on a button will break tests as they do not account for this
+        // As a work-around we throw here early if a submit attempt is made without picking a
+        // valid table from the dropdown select
+        throw Error('Must select a table from the list.');
+    }
+
     const options = {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            data: { table_id, reservation_id },
+            data: { reservation_id },
         }),
     };
-    return await fetchWithException(
-        `${API_BASE_URL}/tables/${table_id}/seat`,
-        options
-    );
+    try {
+        return await fetchWithException(
+            `${API_BASE_URL}/tables/${table_id}/seat`,
+            options
+        );
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const useUpdateTableMutation = () => {

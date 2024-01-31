@@ -12,7 +12,14 @@ const postReservation = async (reservation) => {
         body: JSON.stringify({ data: reservation }),
     };
 
-    return await fetchWithException(`${API_BASE_URL}/reservations`, options);
+    try {
+        return await fetchWithException(
+            `${API_BASE_URL}/reservations`,
+            options
+        );
+    } catch (error) {
+        throw error;
+    }
 };
 
 // posts a new reservation to the database

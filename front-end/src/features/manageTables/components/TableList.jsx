@@ -3,9 +3,9 @@ import { useDeleteTableMutation } from '../api/useDeleteTableMutation';
 import { Button } from '../../../components/Button/Button';
 
 export const TableList = ({ tables }) => {
-    const { mutate } = useDeleteTableMutation();
+    const { mutate: finishTable } = useDeleteTableMutation();
 
-    const finishTable = (event, table_id) => {
+    const finishTableHandler = (event, table) => {
         event.preventDefault();
 
         if (
@@ -13,8 +13,7 @@ export const TableList = ({ tables }) => {
                 'Is this table ready to seat new guests? This cannot be undone.'
             )
         ) {
-            const abortController = new AbortController();
-            mutate(table_id);
+            finishTable(table.table_id);
         }
     };
 
@@ -35,7 +34,7 @@ export const TableList = ({ tables }) => {
                             data-table-id-finish={table.table_id}
                             className='btn btn-outline-primary'
                             onClick={(event) =>
-                                finishTable(event, table.table_id)
+                                finishTableHandler(event, table)
                             }
                         />
                     </td>

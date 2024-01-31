@@ -1,10 +1,8 @@
-// method not allowed error
+function methodNotAllowed(request, response, next) {
+  next({
+    status: 405,
+    message: `${request.method} not allowed for ${request.originalUrl}`,
+  });
+}
 
-function methodNotAllowed(req, res, next) {
-    next({
-        status: 405, 
-        message: `${req.method} not allowed for ${req.originalUrl}`,
-    });
-  }
-  
-  module.exports = methodNotAllowed;
+module.exports = methodNotAllowed;

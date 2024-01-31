@@ -25,11 +25,9 @@ export const SearchByPhoneNumberForm = () => {
 
     return (
         <>
-            {data &&
-                data.reservation.data &&
-                data.reservation.data.length === 0 && (
-                    <ErrorState error={{ message: 'No reservations found' }} />
-                )}
+            {data && data.reservation.length === 0 && (
+                <ErrorState error={{ message: 'No reservations found' }} />
+            )}
             <form onSubmit={onSubmit}>
                 <FormInput
                     label='Mobile Number'
@@ -47,7 +45,7 @@ export const SearchByPhoneNumberForm = () => {
                 <Button title='Cancel' onClick={() => history.goBack()} />
             </form>
 
-            {data && <ReservationsList reservations={data.reservation.data} />}
+            {data && <ReservationsList reservations={data.reservation} />}
         </>
     );
 };

@@ -11,7 +11,10 @@ export const ReservationsList = ({ reservations }) => {
         reservation_status,
     }) => {
         if (window.confirm('Do you want to cancel this reservation?')) {
-            cancelReservation({ reservation_id, status: reservation_status });
+            cancelReservation({
+                reservation_id: reservation_id,
+                status: reservation_status,
+            });
         }
     };
 
@@ -42,7 +45,13 @@ export const ReservationsList = ({ reservations }) => {
                         {reservation.status !== 'booked' ? null : (
                             <>
                                 <Link
-                                    to={`/reservations/${reservation.reservation_id}/seat`}
+                                    to={{
+                                        pathname: `/reservations/${reservation.reservation_id}/seat`,
+                                        state: {
+                                            reservation_date:
+                                                reservation.reservation_date,
+                                        },
+                                    }}
                                     className='btn btn-outline-primary mx-1'
                                 >
                                     Seat
@@ -52,6 +61,8 @@ export const ReservationsList = ({ reservations }) => {
                                         pathname: `/reservations/${reservation.reservation_id}/edit`,
                                         state: {
                                             form: reservationForm,
+                                            reservation_date:
+                                                reservation.reservation_date,
                                         },
                                     }}
                                     className='btn btn-outline-primary mx-1'

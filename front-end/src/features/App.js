@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
 import { Menu } from '../navigation/menu/Menu';
 import { Routes } from '../navigation/routes/Routes';
 

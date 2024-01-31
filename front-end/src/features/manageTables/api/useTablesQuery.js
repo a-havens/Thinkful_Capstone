@@ -4,9 +4,14 @@ import { fetchWithException } from '../../../utils/handledFetch';
 
 export const TABLES_QUERY_KEY = 'tables';
 
-const fetchTables = async () => {
+/**
+ * @param signal
+ * the AbortController signal
+ * @returns {Promise<any>}
+ */
+const fetchTables = async (signal) => {
     try {
-        return await fetchWithException(`${API_BASE_URL}/tables`);
+        return await fetchWithException(`${API_BASE_URL}/tables`, { signal });
     } catch (error) {
         throw error;
     }
@@ -14,5 +19,10 @@ const fetchTables = async () => {
 
 // gets a list of all existing tables in the database
 export const useTablesQuery = () => {
-    return useQuery({ queryFn: fetchTables, queryKey: [TABLES_QUERY_KEY] });
+    const controller = new AbortController();
+
+    return useQuery({
+        queryFn: () => fetchTables(controller.signal),
+        queryKey: [TABLES_QUERY_KEY],
+    });
 };

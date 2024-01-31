@@ -7,11 +7,7 @@ import { TableList } from '../manageTables/components/TableList';
 export const DashboardScreen = () => {
     const { data, isError, error, actions } = useDashboard();
 
-    const { handlePrevious, handleNext } = actions;
-
-    if (isError) {
-        return <ErrorState error={error} />;
-    }
+    const { handlePrevious, handleNext, handleToday } = actions;
 
     if (!data) {
         return null;
@@ -25,6 +21,9 @@ export const DashboardScreen = () => {
             <div className='d-md-flex mb-3'>
                 <h4 className='mb-0'>Reservations for date: {date}</h4>
             </div>
+
+            {isError && <ErrorState error={error} />}
+
             <div className='d-md-flex mb-3'>
                 <button
                     className='col-3'
@@ -32,6 +31,9 @@ export const DashboardScreen = () => {
                     onClick={handlePrevious}
                 >
                     Previous
+                </button>
+                <button className='col-3' type='button' onClick={handleToday}>
+                    Today
                 </button>
                 <button className='col-3' type='button' onClick={handleNext}>
                     Next

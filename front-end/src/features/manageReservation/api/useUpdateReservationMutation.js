@@ -13,10 +13,15 @@ const putReservation = async ({ reservation, reservation_id }) => {
         body: JSON.stringify({ data: reservation }),
     };
 
-    return await fetchWithException(
-        `${API_BASE_URL}/reservations/${reservation_id}`,
-        options
-    );
+    try {
+        return await fetchWithException(
+            `${API_BASE_URL}/reservations/${reservation_id}`,
+            options
+        );
+    } catch (error) {
+        console.log(error.message);
+        throw error;
+    }
 };
 
 export const useUpdateReservationMutation = () => {

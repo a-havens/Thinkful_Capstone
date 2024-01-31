@@ -6,11 +6,9 @@ export const FormSelect = ({ labelHtml, label, data, ...rest }) => {
             <label htmlFor={labelHtml}>{label}</label>
 
             <select {...rest}>
-                <option value=''>-- Select a Table --</option>
-
                 {data.data.map((table) => (
                     <option key={table.table_id} value={table.table_id}>
-                        {table.table_name} - {table.capacity}
+                        {`${table.table_name} - ${table.capacity}`}
                     </option>
                 ))}
             </select>

@@ -1,13 +1,19 @@
 async function selectOptionByText(page, name, optionText) {
-  const optionWaned = (
-    await page.$x(`//*[@name = "${name}"]/option[text() = "${optionText}"]`)
+  const optionElementHandle = (
+      await page.$x(`//*[@name="${name}"]/option[text()="${optionText}"]`)
   )[0];
 
-  const optionValue = await (
-    await optionWaned.getProperty("value")
-  ).jsonValue();
+  console.log(optionElementHandle);
 
-  return await page.select(`[name=${name}`, optionValue);
+  if (optionElementHandle) {
+    const optionValue = await (
+        await optionElementHandle.getProperty("value")
+    ).jsonValue();
+
+    return await page.select(`[name=${name}]`, optionValue);
+  } else {
+    throw new Error(`Option with text "${optionText}" not found for select "${name}"`);
+  }
 }
 
 function containsText(page, selector, expected) {

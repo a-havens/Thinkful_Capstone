@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchWithException } from '../../../utils/handledFetch';
 import { TABLES_QUERY_KEY } from './useTablesQuery';
 import { RESERVATIONS_LIST_QUERY_KEY } from '../../dashboard/api/useReservationsListQuery';
-import { useHistory } from 'react-router-dom';
 
 const deleteTable = async (table_id) => {
     const options = {
@@ -13,15 +12,18 @@ const deleteTable = async (table_id) => {
         },
     };
 
-    return await fetchWithException(
-        `${API_BASE_URL}/tables/${table_id}/seat`,
-        options
-    );
+    try {
+        return await fetchWithException(
+            `${API_BASE_URL}/tables/${table_id}/seat`,
+            options
+        );
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const useDeleteTableMutation = () => {
     const queryClient = useQueryClient();
-    const history = useHistory();
 
     return useMutation({
         mutationFn: (table_id) => deleteTable(table_id),
@@ -30,7 +32,6 @@ export const useDeleteTableMutation = () => {
             queryClient.invalidateQueries({
                 queryKey: [RESERVATIONS_LIST_QUERY_KEY],
             });
-            history.push('/dashboard');
         },
     });
 };

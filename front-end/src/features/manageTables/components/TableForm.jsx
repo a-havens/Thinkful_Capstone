@@ -4,6 +4,7 @@ import { FormInput } from '../../components/FormInput';
 import { Button } from '../../../components/Button/Button';
 import { useCreateTableMutation } from '../api/useCreateTableMutation';
 import { useForm } from '../../../hooks/useForm';
+import { ErrorState } from '../../../components/Error/ErrorState';
 
 export const TableForm = () => {
     const { formState, setFormState } = useForm({
@@ -11,7 +12,7 @@ export const TableForm = () => {
         capacity: '',
     });
 
-    const { mutate: postTable } = useCreateTableMutation();
+    const { mutate: postTable, isError, error } = useCreateTableMutation();
 
     const history = useHistory();
 
@@ -33,30 +34,33 @@ export const TableForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <FormInput
-                label='Table Name'
-                labelHtml='table_name'
-                id='table_name'
-                name='table_name'
-                onChange={handleChange}
-                required='required'
-                value={formState.table_name}
-            />
+        <>
+            {isError && <ErrorState error={error} />}
+            <form onSubmit={handleSubmit}>
+                <FormInput
+                    label='Table Name'
+                    labelHtml='table_name'
+                    id='table_name'
+                    name='table_name'
+                    onChange={handleChange}
+                    required='required'
+                    value={formState.table_name}
+                />
 
-            <FormInput
-                id='capacity'
-                type='number'
-                label='Table Capacity'
-                labelHtml='capacity'
-                name='capacity'
-                onChange={handleChange}
-                required
-                value={formState.capacity}
-            />
+                <FormInput
+                    id='capacity'
+                    type='number'
+                    label='Table Capacity'
+                    labelHtml='capacity'
+                    name='capacity'
+                    onChange={handleChange}
+                    required
+                    value={formState.capacity}
+                />
 
-            <Button title='Submit' type='submit' />
-            <Button title='Cancel' onClick={() => history.goBack()} />
-        </form>
+                <Button title='Submit' type='submit' />
+                <Button title='Cancel' onClick={() => history.goBack()} />
+            </form>
+        </>
     );
 };

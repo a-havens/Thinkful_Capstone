@@ -14,7 +14,8 @@ export const useSearchScreen = ({ mobileNumber }) => {
         }
 
         return {
-            reservation: reservationsByMobileNumberQueryInfo.data,
+            reservation:
+                reservationsByMobileNumberQueryInfo.data.reservationList,
         };
     }, [reservationsByMobileNumberQueryInfo.data]);
 

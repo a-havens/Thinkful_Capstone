@@ -3,6 +3,7 @@ import { formatAsDate, previous, next, today } from '../../../utils/date-time';
 import { useReservationsListQuery } from '../api/useReservationsListQuery';
 import { useTablesQuery } from '../../manageTables/api/useTablesQuery';
 import { useRouteParams } from '../../../hooks/useRouteParams';
+import { useLocation } from 'react-router-dom';
 
 const filterReservationsByCurrentDate = (reservations, currentDate) => {
     // Convert reservation_date to 'YYYY-MM-DD' format on each object
@@ -18,8 +19,13 @@ const filterReservationsByCurrentDate = (reservations, currentDate) => {
 };
 
 export const useDashboard = () => {
+    const location = useLocation();
+    const { state: locationState } = location;
     const urlParams = useRouteParams();
-    const urlDate = urlParams.get('date');
+
+    const urlDate =
+        (locationState && locationState.reservation_date) ??
+        urlParams.get('date');
     const [date, setDate] = useState(urlDate || today());
     const reservationsListQueryInfo = useReservationsListQuery();
     const tablesListQueryInfo = useTablesQuery();
@@ -27,6 +33,11 @@ export const useDashboard = () => {
     const handlePrevious = (event) => {
         event.preventDefault();
         setDate(previous(date));
+    };
+
+    const handleToday = (event) => {
+        event.preventDefault();
+        setDate(today());
     };
 
     const handleNext = (event) => {
@@ -41,7 +52,7 @@ export const useDashboard = () => {
 
         return {
             reservations: filterReservationsByCurrentDate(
-                reservationsListQueryInfo.data.data,
+                reservationsListQueryInfo.data.reservationList,
                 date
             ),
             tables: tablesListQueryInfo.data,
@@ -54,6 +65,7 @@ export const useDashboard = () => {
         data,
         actions: {
             handlePrevious,
+            handleToday,
             handleNext,
         },
     };

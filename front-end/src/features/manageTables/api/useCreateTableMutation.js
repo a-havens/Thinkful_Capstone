@@ -13,7 +13,12 @@ const postTable = async (table) => {
         },
         body: JSON.stringify({ data: table }),
     };
-    return await fetchWithException(`${API_BASE_URL}/tables`, options);
+
+    try {
+        return await fetchWithException(`${API_BASE_URL}/tables`, options);
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const useCreateTableMutation = () => {

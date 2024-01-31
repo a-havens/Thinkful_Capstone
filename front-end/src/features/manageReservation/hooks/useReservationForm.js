@@ -3,10 +3,11 @@ import { useCreateReservationMutation } from '../api/useCreateReservationMutatio
 import { useEffect } from 'react';
 import { useUpdateReservationMutation } from '../api/useUpdateReservationMutation';
 import { useForm } from '../../../hooks/useForm';
-import { convertFormattedDate } from '../../../utils/date-time';
+import { convertFormattedDate, formatAsTime } from '../../../utils/date-time';
 import { useLocation } from 'react-router-dom';
 import { reservationForm } from '../../../constants/constants';
 
+// The optional param of reservation_id will determine if handleSubmit is Put or Post
 export const useReservationForm = ({ reservation_id }) => {
     const location = useLocation();
 
@@ -14,7 +15,11 @@ export const useReservationForm = ({ reservation_id }) => {
 
     const { formState, setFormState } = useForm(reservationForm);
 
-    const { data: reservation } = useReadReservationQuery({ reservation_id });
+    const {
+        data: reservation,
+        isError: isReadReservationError,
+        error: readReservationError,
+    } = useReadReservationQuery({ reservation_id });
 
     const {
         mutate: createReservation,
@@ -22,20 +27,27 @@ export const useReservationForm = ({ reservation_id }) => {
         error: postReservationError,
     } = useCreateReservationMutation();
 
-    const { mutate: editReservation } = useUpdateReservationMutation();
+    const {
+        mutate: editReservation,
+        isError: isEditReservationError,
+        error: editReservationError,
+    } = useUpdateReservationMutation();
 
-    // if "editing" the form, load data for the supplied reservation_id
     useEffect(() => {
+        // If there is an existing reservation match the formState with it to pre-fill the inputs
         if (reservation !== undefined) {
             setFormState({
-                ...reservation.data,
+                // Set the reservation form to match the details contained in the reservation
+                ...reservation.reservation,
                 reservation_date: convertFormattedDate(
-                    reservation.data.reservation_date
+                    reservation.reservation.reservation_date
                 ),
             });
         } else {
             setFormState({
-                ...locationState.form,
+                // If coming from a Link button then use default empty form from locationState
+                // OR use default empty reservationForm
+                ...(locationState?.form || reservationForm),
             });
         }
     }, [locationState, reservation, setFormState]);
@@ -48,20 +60,24 @@ export const useReservationForm = ({ reservation_id }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        const people = parseInt(formState.people, 10);
 
         // POST request (new reservation)
         if (!reservation_id) {
             createReservation({
                 ...formState,
-                people: parseInt(formState.people, 10),
+                people,
             });
         }
 
         // PUT request (edit reservation)
         if (reservation_id) {
-            console.log('calling');
             editReservation({
-                form: formState,
+                form: {
+                    ...formState,
+                    reservation_time: formatAsTime(formState.reservation_time),
+                    people,
+                },
                 reservation_id: reservation_id,
             });
         }
@@ -72,9 +88,12 @@ export const useReservationForm = ({ reservation_id }) => {
         setFormState,
         handleChange,
         handleSubmit,
-        postReservationStates: {
-            isPostReservationError,
-            postReservationError,
-        },
+        isError:
+            isReadReservationError ||
+            isPostReservationError ||
+            isEditReservationError,
+        readReservationError,
+        postReservationError,
+        editReservationError,
     };
 };
