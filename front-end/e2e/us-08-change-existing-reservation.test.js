@@ -95,10 +95,11 @@ describe("US-08 - Change an existing reservation - E2E", () => {
 
         await cancelButton.click();
 
-        //The below check is failing because getting /tables.
-
+        //Failing here. This code waits for a URL response but it shouldn't be necessary
+        // The purpose of this test is to check if that cancel button is present on the screen
+        // after it's related element in the table has been cleared. We have no need for a url
+        // check to detect this and can remove it.
         await page.waitForResponse((response) => {
-          // console.log('RESPONSE =>', response)
           return response.url().includes("/reservations?date=");
         });
 
