@@ -9,11 +9,13 @@ export const ReservationsList = ({ reservations }) => {
     const cancelReservationHandler = ({
         reservation_id,
         reservation_status,
+        reservation_date,
     }) => {
         if (window.confirm('Do you want to cancel this reservation?')) {
             cancelReservation({
                 reservation_id: reservation_id,
                 status: reservation_status,
+                reservation_date: reservation_date,
             });
         }
     };
@@ -80,6 +82,8 @@ export const ReservationsList = ({ reservations }) => {
                                             reservation_id:
                                                 reservation.reservation_id,
                                             reservation_status: 'cancelled',
+                                            reservation_date:
+                                                reservation.reservation_date,
                                         })
                                     }
                                 >
