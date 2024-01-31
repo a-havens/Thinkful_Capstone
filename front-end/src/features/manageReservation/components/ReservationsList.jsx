@@ -20,104 +20,109 @@ export const ReservationsList = ({ reservations }) => {
         }
     };
 
-    const displayReservations = reservations.map((reservation, index) => {
-        if (
-            reservation.status !== 'finished' ||
-            reservation.status !== 'cancelled'
-        ) {
-            return (
-                <tr key={index} className='res-text table-row'>
-                    <td>{reservation.reservation_id}</td>
-                    <td>{reservation.first_name}</td>
-                    <td>{reservation.last_name}</td>
-                    <td>{reservation.mobile_number}</td>
-                    <td>{reservation.reservation_date}</td>
-                    <td>{reservation.reservation_time}</td>
-                    <td>{reservation.people}</td>
-                    <td>
-                        <p
-                            data-reservation-id-status={
-                                reservation.reservation_id
-                            }
-                        >
-                            {reservation.status}
-                        </p>
-                    </td>
-                    <td>
-                        {reservation.status !== 'booked' ? null : (
-                            <>
-                                <Link
-                                    to={{
-                                        pathname: `/reservations/${reservation.reservation_id}/seat`,
-                                        state: {
-                                            reservation_date:
-                                                reservation.reservation_date,
-                                        },
-                                    }}
-                                    className='btn btn-outline-primary mx-1'
-                                >
-                                    Seat
-                                </Link>
-                                <Link
-                                    to={{
-                                        pathname: `/reservations/${reservation.reservation_id}/edit`,
-                                        state: {
-                                            form: reservationForm,
-                                            reservation_date:
-                                                reservation.reservation_date,
-                                        },
-                                    }}
-                                    className='btn btn-outline-primary mx-1'
-                                >
-                                    Edit
-                                </Link>
-                                <button
-                                    data-reservation-id-cancel={
-                                        reservation.reservation_id
-                                    }
-                                    className='btn btn-danger'
-                                    type='button'
-                                    onClick={() =>
-                                        cancelReservationHandler({
-                                            reservation_id:
-                                                reservation.reservation_id,
-                                            reservation_status: 'cancelled',
-                                            reservation_date:
-                                                reservation.reservation_date,
-                                        })
-                                    }
-                                >
-                                    Cancel
-                                </button>
-                            </>
-                        )}
-                    </td>
-                </tr>
-            );
-        }
-        return null;
-    });
-
     return (
-        <div>
-            <div>
-                <table className='table table-striped table-bordered'>
-                    <thead className='thread-dark'>
-                        <tr>
-                            <th>Reservation ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Mobile Number</th>
-                            <th>Reservation Date</th>
-                            <th>Reservation Time</th>
-                            <th>People</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>{displayReservations}</tbody>
-                </table>
-            </div>
-        </div>
+        <table className='table table-striped table-bordered'>
+            <thead className='thread-dark'>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Mobile Number</th>
+                    <th>Reservation Date</th>
+                    <th>Reservation Time</th>
+                    <th>People</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {reservations.map(
+                    (
+                        {
+                            reservation_id,
+                            first_name,
+                            last_name,
+                            mobile_number,
+                            reservation_date,
+                            reservation_time,
+                            people,
+                            status,
+                        },
+                        index
+                    ) =>
+                        status !== 'cancelled' &&
+                        status !== 'finished' && (
+                            <tr key={index} className='res-text table-row'>
+                                <td>{reservation_id}</td>
+                                <td>{first_name}</td>
+                                <td>{last_name}</td>
+                                <td>{mobile_number}</td>
+                                <td>{reservation_date}</td>
+                                <td>{reservation_time}</td>
+                                <td>{people}</td>
+                                <td>
+                                    <p
+                                        data-reservation-id-status={
+                                            reservation_id
+                                        }
+                                    >
+                                        {status}
+                                    </p>
+                                </td>
+                                <td>
+                                    {status !== 'booked' ? null : (
+                                        <>
+                                            <Link
+                                                to={{
+                                                    pathname: `/reservations/${reservation_id}/seat`,
+                                                    state: {
+                                                        reservation_date:
+                                                            reservation_date,
+                                                    },
+                                                }}
+                                                className='btn btn-outline-primary mx-1'
+                                            >
+                                                Seat
+                                            </Link>
+                                            <Link
+                                                to={{
+                                                    pathname: `/reservations/${reservation_id}/edit`,
+                                                    state: {
+                                                        form: reservationForm,
+                                                        reservation_date:
+                                                            reservation_date,
+                                                    },
+                                                }}
+                                                className='btn btn-outline-primary mx-1'
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                data-reservation-id-cancel={
+                                                    reservation_id
+                                                }
+                                                className='btn btn-danger'
+                                                type='button'
+                                                onClick={() =>
+                                                    cancelReservationHandler({
+                                                        reservation_id:
+                                                            reservation_id,
+                                                        reservation_status:
+                                                            'cancelled',
+                                                        reservation_date:
+                                                            reservation_date,
+                                                    })
+                                                }
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        )
+                )}
+            </tbody>
+        </table>
     );
 };

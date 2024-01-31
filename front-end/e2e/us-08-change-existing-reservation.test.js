@@ -95,7 +95,10 @@ describe("US-08 - Change an existing reservation - E2E", () => {
 
         await cancelButton.click();
 
+        //The below check is failing because getting /tables.
+
         await page.waitForResponse((response) => {
+          // console.log('RESPONSE =>', response)
           return response.url().includes("/reservations?date=");
         });
 
