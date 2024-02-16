@@ -4,7 +4,7 @@ const timeFormat = /\d\d:\d\d/;
 /**
  * Formats a Date object as YYYY-MM-DD.
  *
- * This function is *not* exported because the UI should generally avoid working directly with Date instances.
+ * This function is *not* exported because the UI should generally avoid working directly with Date instance.
  * You may export this function if you need it.
  *
  * @param date
@@ -12,23 +12,11 @@ const timeFormat = /\d\d:\d\d/;
  * @returns {string}
  *  the specified Date formatted as YYYY-MM-DD
  */
-export const asDateString = (date) => {
-    return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
-        .toString(10)
-        .padStart(2, '0')}-${date.getDate().toString(10).padStart(2, '0')}`;
-};
-
-export const convertFormattedDate = (inputDate) => {
-    const parsedDate = new Date(inputDate);
-
-    // Get the year, month, and day from the parsed date
-    const year = parsedDate.getUTCFullYear();
-    const month = (parsedDate.getUTCMonth() + 1).toString().padStart(2, '0');
-    const day = parsedDate.getUTCDate().toString().padStart(2, '0');
-
-    // Format the date to 'YYYY-MM-DD'
-    return year + '-' + month + '-' + day;
-};
+function asDateString(date) {
+  return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
+    .toString(10)
+    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
+}
 
 /**
  * Format a date string in ISO-8601 format (which is what is returned from PostgreSQL) as YYYY-MM-DD.
@@ -37,9 +25,9 @@ export const convertFormattedDate = (inputDate) => {
  * @returns {*}
  *  the specified date string formatted as YYYY-MM-DD
  */
-export const formatAsDate = (dateString) => {
-    return dateString.match(dateFormat)[0];
-};
+export function formatAsDate(dateString) {
+  return dateString.match(dateFormat)[0];
+}
 
 /**
  * Format a time string in HH:MM:SS format (which is what is returned from PostgreSQL) as HH:MM.
@@ -48,43 +36,47 @@ export const formatAsDate = (dateString) => {
  * @returns {*}
  *  the specified time string formatted as YHH:MM.
  */
-export const formatAsTime = (timeString) => {
-    return timeString.match(timeFormat)[0];
-};
+export function formatAsTime(timeString) {
+  return timeString.match(timeFormat)[0];
+}
 
 /**
  * Today's date as YYYY-MM-DD.
- * @returns {string}
+ * @returns {*}
  *  the today's date formatted as YYYY-MM-DD
  */
-export const today = () => {
-    return asDateString(new Date());
-};
+export function today() {
+  return asDateString(new Date());
+}
 
 /**
- * Subtracts one day from the specified date and returns it as YYYY-MM-DD.
+ * Subtracts one day to the specified date and return it in as YYYY-MM-DD.
  * @param currentDate
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
- * @returns {string}
+ * @returns {*}
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
  */
-export const previous = (currentDate) => {
-    const [year, month, day] = currentDate.split('-');
-    const date = new Date(year, month - 1, day);
-    date.setDate(date.getDate() - 1);
-    return asDateString(date);
-};
+export function previous(currentDate) {
+  let [ year, month, day ] = currentDate.split("-");
+  month -= 1;
+  const date = new Date(year, month, day);
+  date.setMonth(date.getMonth());
+  date.setDate(date.getDate() - 1);
+  return asDateString(date);
+}
 
 /**
- * Adds one day to the specified date and returns it as YYYY-MM-DD.
+ * Adds one day to the specified date and return it in as YYYY-MM-DD.
  * @param currentDate
  *  a date string in YYYY-MM-DD format (this is also ISO-8601 format)
- * @returns {string}
+ * @returns {*}
  *  the date one day after currentDate, formatted as YYYY-MM-DD
  */
-export const next = (currentDate) => {
-    const [year, month, day] = currentDate.split('-');
-    const date = new Date(year, month - 1, day);
-    date.setDate(date.getDate() + 1);
-    return asDateString(date);
-};
+export function next(currentDate) {
+  let [ year, month, day ] = currentDate.split("-");
+  month -= 1;
+  const date = new Date(year, month, day);
+  date.setMonth(date.getMonth());
+  date.setDate(date.getDate() + 1);
+  return asDateString(date);
+}

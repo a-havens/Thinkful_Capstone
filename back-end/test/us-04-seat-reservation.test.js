@@ -37,7 +37,6 @@ describe("US-04 - Seat reservation", () => {
           .post("/tables")
           .set("Accept", "application/json")
           .send({ datum: {} });
-          
 
         expect(response.body.error).toBeDefined();
         expect(response.status).toBe(400);
