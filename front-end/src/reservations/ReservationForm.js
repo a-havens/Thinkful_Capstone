@@ -35,7 +35,7 @@ function ReservationForm({reservation, changeHandler, submitHandler, cancelHandl
               name="mobile_number"
               id="mobile_number"
               type="number" 
-              placeholder= "Phone Number (no hyphens)"
+              placeholder= "Ex. 5555555555"
               required={true}
               value={reservation.mobile_number}
               maxLength="100"
